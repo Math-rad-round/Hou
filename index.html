@@ -263,33 +263,36 @@
             sendScoreToSheet();
         }
 
-        async function sendScoreToSheet() { 
-            // 这里使用Airtable API (已提供的代码)
-            const data = { performUpsert: { fieldsToMergeOn: ["Name"] /* 使用 Name 字段来查找现有记录 */
-            }, records: [ { fields: { "Name": playerName, "Score1": score } } ] };
-
-            const API_URL = "https://api.airtable.com/v0/appl4YcGhBdkhHOiQ/Table%201";
-
+        async function saveScore() {
+            if (!playerName) return;
+            
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.style.display = 'block';
+            
             try {
-                const response = await fetch(API_URL, {
-                    method: 'PATCH',  // 改为 PATCH 方法
+                const response = await fetch('/api/save', {
+                    method: 'POST',
                     headers: {
-                        'Authorization': `Bearer pat5YpaqpR2U3ibKs.7e44e275a821c48e927ad6286eb105661cfdef6bb1dc9785d30bdcc138be21f8`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        Name: playerName,
+                        Score1: score  // 使用Score1字段
+                    })
                 });
-
+                
+                const result = await response.json();
+                loadingMessage.style.display = 'none';
+                
                 if (response.ok) {
-                    console.log('Score saved to Airtable!');
+                    console.log('Score erfolgreich gespeichert:', result);
                 } else {
-                    console.error('Error saving score:', await response.text());
+                    console.error('Fehler beim Speichern:', result);
                 }
             } catch (error) {
-                console.error('Network error:', error);
+                loadingMessage.style.display = 'none';
+                console.error('Netzwerkfehler:', error);
             }
-
-        
         }
 
         // 允许按Enter键开始游戏
