@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -13,138 +14,7 @@
             height: 100vh;
             font-family: Arial, sans-serif;
             margin: 0;
-            overflow: hidden;
         }
-        
-        /* 开始界面样式 */
-        .start-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            max-width: 500px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .start-title {
-            font-size: 36px;
-            color: #333;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #FF6B6B, #4CAF50);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .start-subtitle {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 30px;
-        }
-        
-        .sun-logo {
-            width: 120px;
-            height: 120px;
-            margin: 20px auto 30px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #FFD700, #FFA500);
-            animation: pulse 2s infinite;
-            border: 5px solid #FFA500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { 
-                box-shadow: 0 0 20px #FFA500; 
-                transform: scale(1);
-            }
-            50% { 
-                box-shadow: 0 0 40px #FFD700; 
-                transform: scale(1.05);
-            }
-        }
-        
-        .name-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-sizing: border-box;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-        
-        .name-input:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-        }
-        
-        .start-button {
-            padding: 15px 50px;
-            font-size: 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            color: white;
-            background: linear-gradient(45deg, #4CAF50, #2196F3);
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        .start-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        .start-button:active {
-            transform: translateY(-1px);
-        }
-        
-        .instructions {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            text-align: left;
-        }
-        
-        .instructions h3 {
-            color: #333;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-            margin: 0;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-            color: #555;
-        }
-        
-        .instructions em {
-            color: #888;
-            font-size: 14px;
-        }
-        
-        /* 游戏界面样式（修改后的） */
         .game-container {
             background: white;
             border-radius: 20px;
@@ -152,40 +22,12 @@
             text-align: center;
             max-width: 600px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-            animation: fadeIn 0.5s ease;
-            display: none;
         }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .player-info {
-            text-align: left;
-        }
-        
-        .player-name {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .round-counter {
-            font-size: 16px;
-            color: #666;
-        }
-        
         .title {
             font-size: 32px;
             color: #333;
             margin-bottom: 30px;
         }
-        
         .sun-display {
             width: 200px;
             height: 200px;
@@ -194,37 +36,30 @@
             background: radial-gradient(circle at 35% 35%, #FFD700, #FFA500);
             animation: glow 1s infinite;
             border: 5px solid #FFA500;
-            transition: all 0.5s ease;
         }
-        
         @keyframes glow {
             0%, 100% { box-shadow: 0 0 40px #FFA500; }
             50% { box-shadow: 0 0 60px #FFD700; }
         }
-        
         .sun-display.small {
             width: 80px;
             height: 80px;
         }
-        
         .sun-display.large {
             width: 280px;
             height: 280px;
         }
-        
         .question {
             font-size: 24px;
             color: #555;
             margin-bottom: 30px;
         }
-        
         .button-group {
             display: flex;
             gap: 20px;
             justify-content: center;
             margin: 30px 0;
         }
-        
         button {
             padding: 15px 40px;
             font-size: 20px;
@@ -235,159 +70,45 @@
             font-weight: bold;
             color: white;
         }
-        
         .btn-gross {
             background: #4CAF50;
             flex: 1;
             max-width: 150px;
         }
-        
         .btn-gross:hover {
             background: #45a049;
             transform: scale(1.05);
         }
-        
         .btn-klein {
             background: #2196F3;
             flex: 1;
             max-width: 150px;
         }
-        
         .btn-klein:hover {
             background: #0b7dda;
             transform: scale(1.05);
         }
-        
         .feedback {
             font-size: 22px;
             margin-top: 20px;
             min-height: 40px;
             font-weight: bold;
-            transition: all 0.3s;
         }
-        
-        .correct { 
-            color: #4CAF50; 
-            animation: pop 0.5s;
-        }
-        
-        .incorrect { 
-            color: #f44336; 
-            animation: shake 0.5s;
-        }
-        
-        @keyframes pop {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-        
+        .correct { color: #4CAF50; }
+        .incorrect { color: #f44336; }
         .score {
             font-size: 20px;
             color: #FF6B6B;
             margin-top: 20px;
             font-weight: bold;
         }
-        
-        .game-over {
-            display: none;
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            animation: fadeIn 0.5s;
-        }
-        
-        .game-over h2 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .final-score {
-            font-size: 48px;
-            font-weight: bold;
-            color: #FF6B6B;
-            margin: 20px 0;
-        }
-        
-        .restart-button {
-            padding: 15px 40px;
-            font-size: 18px;
-            background: linear-gradient(45deg, #4CAF50, #2196F3);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-        
-        .restart-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        .back-to-start {
-            background: #9C27B0;
-            margin-top: 10px;
-        }
-        
-        .loading {
-            display: none;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
-    <!-- 开始界面 -->
-    <div class="start-container" id="startContainer">
-        <div class="start-title">Größe-Sortierer ☀️</div>
-        <div class="start-subtitle">Teste dein Größengefühl!</div>
-        
-        <div class="sun-logo">☀️</div>
-        
-        <div class="instructions">
-            <h3>Spielanleitung:</h3>
-            <ul>
-                <li>10 Runden - entscheide schnell!</li>
-                <li>⬆️ GROSS für große Sonnen</li>
-                <li>⬇️ KLEIN für kleine Sonnen</li>
-                <li>Dein Score wird automatisch gespeichert</li>
-            </ul>
-            <em>Gib unten deinen Namen ein, um zu starten!</em>
-        </div>
-        
-        <input type="text" 
-               class="name-input" 
-               id="playerNameInput" 
-               placeholder="Gib deinen Namen ein..." 
-               maxlength="20"
-               autocomplete="off">
-        
-        <button class="start-button" onclick="startGame()">
-            STARTE DAS SPIEL 🎮
-        </button>
-    </div>
-    
-    <!-- 游戏界面 -->
-    <div class="game-container" id="gameContainer">
-        <div class="header">
-            <div class="player-info">
-                <div class="player-name" id="playerNameDisplay"></div>
-                <div class="round-counter">Runde: <span id="roundCounter">1</span>/10</div>
-            </div>
-        </div>
-        
-        <div class="title">Ist diese Sonne groß oder klein?</div>
+    <div class="game-container">
+        <div class="title">Größe-Sortierer ☀️</div>
         <div class="sun-display" id="sunDisplay"></div>
-        <div class="question">Wähle deine Antwort:</div>
-        
+        <div class="question">Ist diese Sonne groß oder klein?</div>
         <div class="button-group">
             <button class="btn-gross" onclick="answer('gross')">
                 ⬆️ GROSS (大)
@@ -396,75 +117,18 @@
                 ⬇️ KLEIN (小)
             </button>
         </div>
-        
         <div class="feedback" id="feedback"></div>
-        <div class="score">Aktueller Score: <span id="scoreValue">0</span> / 10</div>
-        
-        <!-- 游戏结束界面 -->
-        <div class="game-over" id="gameOver">
-            <h2>🎉 Spiel beendet! 🎉</h2>
-            <div class="final-score" id="finalScore">0/10</div>
-            <div id="resultMessage"></div>
-            <div class="loading" id="loadingMessage">
-                Speichere Score... ⏳
-            </div>
-            <button class="restart-button" onclick="restartGame()">
-                Nochmal spielen 🔄
-            </button>
-            <button class="restart-button back-to-start" onclick="backToStart()">
-                Zurück zum Start 🏠
-            </button>
-        </div>
+        <div class="score">得分: <span id="scoreValue">0</span> / 10</div>
     </div>
 
     <script>
-        // 游戏变量
         let score = 0;
         let round = 0;
         let correctAnswer = '';
         const sizes = ['small', 'medium', 'large'];
-        let playerName = '';
-        let gameActive = false;
 
-        // 开始游戏
-        function startGame() {
-            const nameInput = document.getElementById('playerNameInput');
-            const name = nameInput.value.trim();
-            
-            if (!name) {
-                alert('Bitte gib deinen Namen ein!');
-                nameInput.focus();
-                nameInput.style.borderColor = '#f44336';
-                nameInput.style.boxShadow = '0 0 0 3px rgba(244, 67, 54, 0.2)';
-                return;
-            }
-            
-            playerName = name;
-            document.getElementById('playerNameDisplay').textContent = `Spieler: ${playerName}`;
-            
-            // 切换界面
-            document.getElementById('startContainer').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
-            
-            // 重置游戏状态
-            score = 0;
-            round = 0;
-            gameActive = true;
-            
-            // 隐藏游戏结束界面
-            document.getElementById('gameOver').style.display = 'none';
-            
-            // 开始第一轮
-            generateRound();
-        }
-
-        // 生成新一轮
         function generateRound() {
-            if (!gameActive) return;
-            
             round++;
-            document.getElementById('roundCounter').textContent = round;
-            
             if (round > 10) {
                 endGame();
                 return;
@@ -473,31 +137,24 @@
             const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
             const sunDisplay = document.getElementById('sunDisplay');
             
-            // 清空之前的class和动画
+            // 清空之前的class
             sunDisplay.className = 'sun-display';
-            void sunDisplay.offsetWidth; // 触发重绘，重置动画
             
-            // 添加新的大小类
             if (randomSize === 'small') {
                 sunDisplay.classList.add('small');
                 correctAnswer = 'klein';
             } else if (randomSize === 'medium') {
                 sunDisplay.classList.add('medium');
-                correctAnswer = 'gross'; // 中等当作"大"处理
+                correctAnswer = 'gross'; // 中等当作"大"处理，简化
             } else {
                 sunDisplay.classList.add('large');
                 correctAnswer = 'gross';
             }
             
-            // 清除反馈信息
             document.getElementById('feedback').textContent = '';
-            document.getElementById('feedback').className = 'feedback';
         }
 
-        // 处理答案
         function answer(size) {
-            if (!gameActive) return;
-            
             const feedback = document.getElementById('feedback');
             
             if (size === correctAnswer) {
@@ -518,37 +175,24 @@
             document.getElementById('scoreValue').textContent = score;
             setTimeout(generateRound, 1500);
         }
-
-        // 游戏结束
+        function getName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            if (name) {
+                return decodeURIComponent(name);
+            }
+            return '小朋友';
+        }
         function endGame() {
-            gameActive = false;
-            document.getElementById('gameOver').style.display = 'block';
-            document.getElementById('finalScore').textContent = `${score}/10`;
+            document.getElementById('sunDisplay').innerHTML = '';
+            document.getElementById('feedback').textContent = 
+                `Spiel vorbei! Dein Score: ${score}/10! 🎉`;
             document.querySelector('.button-group').style.display = 'none';
             
-            // 显示结果消息
-            const resultMessage = document.getElementById('resultMessage');
-            if (score >= 8) {
-                resultMessage.innerHTML = 'Hervorragend! Du bist ein Größenmeister! 🏆';
-                resultMessage.style.color = '#4CAF50';
-            } else if (score >= 5) {
-                resultMessage.innerHTML = 'Gut gemacht! Weiter so! 👍';
-                resultMessage.style.color = '#2196F3';
-            } else {
-                resultMessage.innerHTML = 'Übung macht den Meister! Versuche es nochmal! 💪';
-                resultMessage.style.color = '#FF9800';
-            }
-            
-            // 保存分数
-            saveScore();
+            sendScore({Name:getName(), Score2:score});
         }
-
-        // 保存分数到服务器
-        async function saveScore() {
-            if (!playerName) return;
-            
+        async function sendScore(body) {
             const loadingMessage = document.getElementById('loadingMessage');
-            loadingMessage.style.display = 'block';
             
             try {
                 const response = await fetch('/api/save', {
@@ -556,10 +200,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        Name: playerName,
-                        Score2: score  // 使用Score2字段
-                    })
+                    body: JSON.stringify(body)
                 });
                 
                 const result = await response.json();
@@ -576,44 +217,7 @@
             }
         }
 
-        // 重新开始游戏
-        function restartGame() {
-            score = 0;
-            round = 0;
-            gameActive = true;
-            
-            document.getElementById('scoreValue').textContent = '0';
-            document.getElementById('roundCounter').textContent = '1';
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('feedback').className = 'feedback';
-            document.getElementById('gameOver').style.display = 'none';
-            document.querySelector('.button-group').style.display = 'flex';
-            
-            generateRound();
-        }
-
-        // 返回开始界面
-        function backToStart() {
-            document.getElementById('gameContainer').style.display = 'none';
-            document.getElementById('startContainer').style.display = 'block';
-            
-            // 清空输入框
-            document.getElementById('playerNameInput').value = '';
-            document.getElementById('playerNameInput').style.borderColor = '#ddd';
-            document.getElementById('playerNameInput').style.boxShadow = 'none';
-        }
-
-        // 按Enter键开始游戏
-        document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                startGame();
-            }
-        });
-        
-        // 页面加载时聚焦到输入框
-        window.onload = function() {
-            document.getElementById('playerNameInput').focus();
-        };
+        generateRound();
     </script>
 </body>
 </html>

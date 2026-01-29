@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finale Entscheidung - The Final Choice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 700px;
+            padding: 40px;
+        }
+        
+        .title {
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .scene {
+            margin: 40px 0;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .sun-final {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 50px #FFD700;
+            margin-bottom: 30px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .question {
+            font-size: 28px;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+        
+        .choice-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .btn {
+            padding: 20px 40px;
+            font-size: 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: white;
+            flex: 1;
+            max-width: 250px;
+        }
+        
+        .btn-schießen {
+            background: #FF6B6B;
+        }
+        .btn-schießen:hover {
+            background: #ee5a52;
+            transform: scale(1.05);
+        }
+        
+        .btn-behalten {
+            background: #4CAF50;
+        }
+        .btn-behalten:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        
+        .result {
+            display: none;
+            font-size: 24px;
+            line-height: 1.6;
+            margin: 30px 0;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        .result-bad {
+            background: rgba(0,0,0,0.3);
+            border: 3px solid #FF6B6B;
+        }
+        
+        .result-good {
+            background: rgba(76, 175, 80, 0.2);
+            border: 3px solid #4CAF50;
+        }
+        
+        .final-message {
+            font-size: 26px;
+            margin-top: 40px;
+            font-weight: bold;
+        }
+        
+        .world-visual {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+        
+        .world-dark {
+            background: #111;
+            color: #666;
+        }
+        
+        .world-bright {
+            background: linear-gradient(135deg, #FFD700 0%, #87CEEB 100%);
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">🌍 Die letzte Entscheidung 最后的决定</div>
+        
+        <div class="scene">
+            <div class="sun-final"></div>
+            <div class="question">
+                Sollen wir die letzte Sonne schießen?<br>
+                我们应该射掉最后一个太阳吗?<br>
+                <small style="font-size: 16px; opacity: 0.8;">
+                    Denk nach! Was passiert? (想想看，会发生什么?)
+                </small>
+            </div>
+        </div>
+        
+        <div class="choice-buttons">
+            <button class="btn btn-schießen" onclick="shootSun()">
+                💣 SCHIESSSEN!<br>
+                <small>射掉它!</small>
+            </button>
+            <button class="btn btn-behalten" onclick="keepSun()">
+                ☀️ BEHALTEN!<br>
+                <small>保留它!</small>
+            </button>
+        </div>
+        
+        <div id="resultContainer">
+            <!-- 动态内容会插入这里 -->
+        </div>
+    </div>
+
+    <script>
+        function getName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            if (name) {
+                return decodeURIComponent(name);
+            }
+            return '小朋友';
+        }
+        function shootSun() {
+            const resultHTML = `
+                <div class="result result-bad show">
+                    <div class="world-visual world-dark">
+                        ⚫ SCHWARZ! (黑暗!)
+                    </div>
+                    <p>
+                        我们射掉了最后的太阳。<br>
+                        Alle Sonnen sind weg. Die Welt ist schwarz und kalt.
+                    </p>
+                    <p style="font-size: 18px; opacity: 0.7;">
+                        没有光，没有热，植物不能生长。<br>
+                        地球失去了生命。😢
+                    </p>
+                    <div class="final-message" style="color: #FF6B6B;">
+                        ❌ 这不是一个好的选择。
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('resultContainer').innerHTML = resultHTML;
+            document.querySelector('.choice-buttons').style.display = 'none';
+            
+            sendScore({Name:getName(), Score2:6});
+            // 3秒后显示重新开始选项
+            setTimeout(() => {
+                document.getElementById('resultContainer').innerHTML += 
+                    '<button class="btn btn-behalten" onclick="location.reload()" style="margin-top: 20px;">重新开始</button>';
+            }, 3000);
+        }
+        
+        function keepSun() {
+            const resultHTML = `
+                <div class="result result-good show">
+                    <div class="world-visual world-bright">
+                        ☀️ HELL UND WARM! (明亮温暖!)
+                    </div>
+                    <p>
+                        我们保留了最后一个太阳。<br>
+                        Eine Sonne bleibt! Die Welt hat Licht und Wärme.
+                    </p>
+                    <p style="font-size: 18px; opacity: 0.9;">
+                        树木生长，动物幸福，人类有光和热。<br>
+                        地球恢复了生命！🌱🌍
+                    </p>
+                    <div class="final-message" style="color: #4CAF50;">
+                        ✓ 后羿和你一起拯救了世界！
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('resultContainer').innerHTML = resultHTML;
+            document.querySelector('.choice-buttons').style.display = 'none';
+            
+            sendScore({Name:getName(), Score2:10});
+            // 3秒后显示重新开始选项
+            setTimeout(() => {
+                document.getElementById('resultContainer').innerHTML += 
+                    '<button class="btn btn-behalten" onclick="location.reload()" style="margin-top: 20px;">再来一次</button>';
+            }, 3000);
+        }
+
+        async function sendScore(body) {
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                const result = await response.json();
+                loadingMessage.style.display = 'none';
+                
+                if (response.ok) {
+                    console.log('Score erfolgreich gespeichert:', result);
+                } else {
+                    console.error('Fehler beim Speichern:', result);
+                }
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                console.error('Netzwerkfehler:', error);
+            }
+        }
+
+    </script>
+</body>
+</html>
