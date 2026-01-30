@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>传球迷宫 · 救援 Coco</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #0b1c2d;
+    color: #fff;
+    text-align: center;
+  }
+
+  h1 {
+    margin-top: 10px;
+    font-size: 26px;
+  }
+
+  #subtitle {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 10px;
+  }
+
+  #goal {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+
+  #maze {
+    margin: 20px auto;
+    width: 300px;
+    height: 18px;
+    background: #333;
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  #mazeProgress {
+    height: 100%;
+    width: 0%;
+    background: #51cf66;
+    transition: width 0.6s;
+  }
+
+  #field {
+    margin-top: 30px;
+    position: relative;
+    height: 200px;
+  }
+
+  .zone {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    line-height: 100px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .zone small {
+    display: block;
+    font-size: 12px;
+    color: #222;
+    margin-top: -20px;
+  }
+
+  .rojo { background: #ff6b6b; left: 20px; }
+  .azul { background: #4dabf7; left: 140px; }
+  .verde { background: #51cf66; left: 260px; }
+
+  #ball {
+    position: absolute;
+    top: 60px;
+    left: 140px;
+    font-size: 48px;
+    transition: all 0.8s ease;
+  }
+
+  #controls button {
+    margin: 6px;
+    font-size: 15px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+
+  #message {
+    margin-top: 18px;
+    font-size: 20px;
+    min-height: 44px;
+  }
+
+  #message small {
+    display: block;
+    font-size: 14px;
+    color: #ccc;
+  }
+</style>
+</head>
+<body>
+
+<h1>🌀 传球迷宫 · 救援 Coco</h1>
+<div id="subtitle">Pass the Ball Maze</div>
+
+<div id="goal">
+🎯 学习目标：听懂颜色指令，用西班牙语回应，并完成团队合作
+</div>
+
+<div id="maze">
+  <div id="mazeProgress"></div>
+</div>
+
+<div id="field">
+  <div id="ball">⚽</div>
+
+  <div class="zone rojo">
+    Rojo
+    <small>红色队</small>
+  </div>
+
+  <div class="zone azul">
+    Azul
+    <small>蓝色队</small>
+  </div>
+
+  <div class="zone verde">
+    Verde
+    <small>绿色队</small>
+  </div>
+</div>
+
+<div id="controls">
+  <button onclick="passBall('Rojo')">¡Pásala a Rojo!<br>传给红色队</button>
+  <button onclick="passBall('Azul')">¡Pásala a Azul!<br>传给蓝色队</button>
+  <button onclick="passBall('Verde')">¡Pásala a Verde!<br>传给绿色队</button>
+  <button onclick="resetGame()">🔁 重新开始</button>
+</div>
+
+<div id="message">
+准备好了吗？¡Comenzamos!
+<small>听老师指令，说出颜色</small>
+</div>
+
+<script>
+const ball = document.getElementById("ball");
+const msg = document.getElementById("message");
+const progress = document.getElementById("mazeProgress");
+
+let steps = 0;
+const totalSteps = 3;
+
+const positions = {
+  Rojo: 40,
+  Azul: 160,
+  Verde: 280
+};
+
+function passBall(color) {
+  msg.innerHTML = `¡Pásala a ${color}!<small>把球传给 ${color === "Rojo" ? "红色" : color === "Azul" ? "蓝色" : "绿色"} 队</small>`;
+  ball.style.left = positions[color] + "px";
+  steps++;
+
+  setTimeout(() => {
+    progress.style.width = (steps / totalSteps * 100) + "%";
+
+    if (steps === totalSteps) {
+      msg.innerHTML = `¡Gol! ¡Coco está a salvo!<small>成功救出 Coco！</small>`;
+    } else {
+      msg.innerHTML = `¡Muy bien!<small>做得很好，继续！</small>`;
+    }
+  }, 800);
+}
+
+function resetGame() {
+  steps = 0;
+  progress.style.width = "0%";
+  ball.style.left = "140px";
+  msg.innerHTML = `重新开始！<small>准备好后听老师指令</small>`;
+}
+</script>
+
+</body>
+</html>

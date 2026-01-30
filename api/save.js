@@ -43,7 +43,10 @@ export default async function handler(req, res) {
         fields["Score3"] = score3;
       }
     }
-
+    target = 'https://api.airtable.com/v0/appl4YcGhBdkhHOiQ/Table%201'
+    if('target' in req.body){
+      target=req.body.target
+    }
     // 检查是否至少有一个分数字段
     const hasScore = 'Score1' in fields || 'Score2' in fields || 'Score3' in fields;
     if (!hasScore) {
@@ -59,10 +62,10 @@ export default async function handler(req, res) {
         fields: fields
       }]
     };
-
+    
     // 调用 Airtable API
     const airtableResponse = await fetch(
-      'https://api.airtable.com/v0/appl4YcGhBdkhHOiQ/Table%201',
+      target,
       {
         method: 'PATCH',
         headers: {

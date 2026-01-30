@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>颜色闪电战 · Color Blitz</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: radial-gradient(circle at top, #0b1c2d, #000);
+    color: #fff;
+    text-align: center;
+  }
+  h1 { margin: 10px 0; }
+
+  #score {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  #arena {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 30px;
+  }
+
+  .planet {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    line-height: 120px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+  }
+
+  .rojo { background: #ff4d4d; }
+  .azul { background: #4dabf7; }
+  .verde { background: #51cf66; }
+
+  #colorBall {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: gray;
+    font-size: 26px;
+    line-height: 140px;
+    font-weight: bold;
+  }
+
+  #message {
+    margin-top: 25px;
+    min-height: 50px;
+    font-size: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>⚡ 颜色闪电战 ⚡</h1>
+<div id="score">⭐ 星星：<span id="points">0</span></div>
+
+<div id="arena">
+  <div class="planet rojo" onclick="choose('Rojo')">Rojo</div>
+  <div id="colorBall">?</div>
+  <div class="planet azul" onclick="choose('Azul')">Azul</div>
+</div>
+
+<div style="margin-top:20px">
+  <div class="planet verde" onclick="choose('Verde')">Verde</div>
+</div>
+
+<div id="message">准备好了吗？3, 2, 1... ¡Comenzamos!</div>
+
+<script>
+const colors = ["Rojo", "Azul", "Verde"];
+const colorMap = {
+  Rojo: "#ff4d4d",
+  Azul: "#4dabf7",
+  Verde: "#51cf66"
+};
+
+let currentColor = null;
+let points = 0;
+let round = 1;
+let step = 0;
+
+const rounds = [
+  { count: 5, speed: 2000 },
+  { count: 5, speed: 1500 },
+  { count: 5, speed: 1000 },
+  { count: 5, speed: 850 },
+  { count: 10, speed: 700 } // 冠军挑战
+];
+
+const ball = document.getElementById("colorBall");
+const msg = document.getElementById("message");
+const score = document.getElementById("points");
+
+function showColor() {
+  currentColor = colors[Math.floor(Math.random() * 3)];
+  ball.style.background = colorMap[currentColor];
+  ball.textContent = currentColor;
+  msg.textContent = "¿Qué color es?";
+}
+
+function choose(answer) {
+  if (!currentColor) return;
+
+  if (answer === currentColor) {
+    points++;
+    score.textContent = points;
+    msg.textContent = "¡Correcto! " + currentColor;
+  } else {
+    msg.textContent = "¡Intenta de nuevo!";
+  }
+  currentColor = null;
+}
+function getName() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    if (name) {
+        return decodeURIComponent(name);
+    }
+    return '小朋友';
+}
+async function sendscore(body) {
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                const result = await response.json();
+                loadingMessage.style.display = 'none';
+                
+                if (response.ok) {
+                    console.log('Score erfolgreich gespeichert:', result);
+                } else {
+                    console.error('Fehler beim Speichern:', result);
+                }
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                console.error('Netzwerkfehler:', error);
+            }
+        }
+function startRound() {
+  step = 0;
+  msg.textContent = `第 ${round} 轮开始！`;
+  const interval = setInterval(() => {
+    showColor();
+    step++;
+    if (step >= rounds[round - 1].count) {
+      clearInterval(interval);
+      setTimeout(() => {
+        if (round < rounds.length) {
+          msg.textContent = "¡Muy bien! 准备加速！";
+          round++;
+          setTimeout(startRound, 1500);
+        } else {
+          msg.textContent = "🏆 冠军挑战完成！¡Viva, todos!";
+          ball.style.background = "gray";
+          ball.textContent = "★";
+          sendScore({Name:getName(), Score1:score,target:'https://api.airtable.com/v0/appl4YcGhBdkhHOiQ/Table%202'});
+        }
+      }, rounds[round - 1].speed);
+    }
+  }, rounds[round - 1].speed);
+}
+
+setTimeout(startRound, 1500);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Planet - Aprendizaje de Colores / 颜色星球学习</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0e29;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            color: white;
+        }
+        
+        /* 太空背景 */
+        .space-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(100, 100, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 100, 100, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(100, 255, 100, 0.1) 0%, transparent 50%);
+        }
+        
+        /* 星球容器 */
+        .planets-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        /* 星球样式 */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+        
+        .planet.red {
+            left: 10%;
+            top: 30%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .planet.blue {
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 30% 30%, #3498db, #1a5276);
+            animation: float 8s ease-in-out infinite 1s;
+        }
+        
+        .planet.green {
+            right: 10%;
+            top: 40%;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle at 30% 30%, #2ecc71, #1e8449);
+            animation: float 7s ease-in-out infinite 0.5s;
+        }
+        
+        /* 星球标签 - 双语 */
+        .planet-label {
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            text-align: center;
+            line-height: 1.3;
+            width: 120px;
+        }
+        
+        .red-label {
+            left: calc(10% + 150px/2);
+            transform: translateX(-50%);
+            top: calc(30% + 150px + 10px);
+        }
+        
+        .blue-label {
+            left: 50%;
+            transform: translateX(-50%);
+            top: calc(20% + 180px + 10px);
+        }
+        
+        .green-label {
+            right: calc(10% + 140px/2);
+            transform: translateX(50%);
+            top: calc(40% + 140px + 10px);
+        }
+        
+        /* 中心足球 */
+        .soccer-ball {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+        }
+        
+        .soccer-ball::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: black;
+            transform: translateY(-50%);
+        }
+        
+        .soccer-ball::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: black;
+            transform: translateX(-50%);
+        }
+        
+        /* 游戏主容器 */
+        .game-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        /* 顶部信息栏 - 双语 */
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid #f1c40f;
+        }
+        
+        .game-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #f1c40f;
+            text-shadow: 0 0 20px rgba(241, 196, 15, 0.7);
+        }
+        
+        .game-subtitle {
+            font-size: 18px;
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .round-info {
+            font-size: 24px;
+            color: #ecf0f1;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* 颜色球显示区 - 屏幕上方 */
+        .color-ball-display {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .color-ball {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 60px currentColor,
+                inset 0 0 40px rgba(255, 255, 255, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+            border: 8px solid white;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .color-ball.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* 颜色球动画 */
+        .color-ball.red {
+            background: radial-gradient(circle at 35% 35%, #ff6b6b, #c0392b);
+            color: #ff6b6b;
+        }
+        
+        .color-ball.blue {
+            background: radial-gradient(circle at 35% 35%, #3498db, #1a5276);
+            color: #3498db;
+        }
+        
+        .color-ball.green {
+            background: radial-gradient(circle at 35% 35%, #2ecc71, #1e8449);
+            color: #2ecc71;
+        }
+        
+        /* 问题显示 - 双语 */
+        .question-container {
+            position: absolute;
+            top: 320px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        .question {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-align: center;
+            min-height: 50px;
+            color: #f1c40f;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .question-translation {
+            font-size: 28px;
+            color: #bdc3c7;
+            font-style: italic;
+        }
+        
+        /* 答案按钮 - 双语 */
+        .answer-buttons {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+            width: 90%;
+            max-width: 900px;
+            justify-content: center;
+        }
+        
+        .answer-btn {
+            padding: 20px 30px;
+            font-size: 24px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            min-width: 200px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.3;
+        }
+        
+        .answer-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        
+        .answer-btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .answer-btn.rojo {
+            background: linear-gradient(45deg, #ff6b6b, #c0392b);
+        }
+        
+        .answer-btn.azul {
+            background: linear-gradient(45deg, #3498db, #1a5276);
+        }
+        
+        .answer-btn.verde {
+            background: linear-gradient(45deg, #2ecc71, #1e8449);
+        }
+        
+        .answer-label {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .answer-translation {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        /* 反馈信息 - 双语 */
+        .feedback {
+            position: absolute;
+            bottom: 320px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            min-height: 60px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        .feedback-text {
+            margin-bottom: 5px;
+        }
+        
+        .feedback-translation {
+            font-size: 24px;
+            opacity: 0.9;
+        }
+        
+        .feedback.correct {
+            color: #2ecc71;
+            animation: celebrate 0.5s ease;
+        }
+        
+        .feedback.incorrect {
+            color: #e74c3c;
+            animation: shake 0.5s ease;
+        }
+        
+        /* 积分显示 - 双语 */
+        .score-board {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border-top: 3px solid #f1c40f;
+        }
+        
+        .score-title {
+            font-size: 24px;
+            color: #f1c40f;
+            margin-bottom: 5px;
+        }
+        
+        .score-subtitle {
+            font-size: 18px;
+            color: #bdc3c7;
+            margin-bottom: 10px;
+        }
+        
+        .score-value {
+            font-size: 42px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* 进度条 - 双语 */
+        .progress-container {
+            position: absolute;
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 0;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        /* 计时器 - 双语 */
+        .timer-container {
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .timer {
+            font-size: 28px;
+            color: #f1c40f;
+            font-weight: bold;
+        }
+        
+        .timer-label {
+            font-size: 16px;
+            color: #bdc3c7;
+            margin-bottom: 5px;
+        }
+        
+        /* 游戏结束界面 - 双语 */
+        .game-over {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            border: 3px solid #f1c40f;
+            width: 90%;
+            max-width: 700px;
+        }
+        
+        .game-over-title {
+            font-size: 36px;
+            color: #f1c40f;
+            margin-bottom: 20px;
+        }
+        
+        .game-over-subtitle {
+            font-size: 24px;
+            color: #ecf0f1;
+            margin-bottom: 30px;
+        }
+        
+        .final-score {
+            font-size: 48px;
+            color: white;
+            margin: 20px 0;
+        }
+        
+        .results-container {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .restart-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(155, 89, 182, 0.5);
+        }
+        
+        /* 动画定义 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 60px currentColor,
+                          inset 0 0 40px rgba(255, 255, 255, 0.3);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 80px currentColor,
+                          inset 0 0 60px rgba(255, 255, 255, 0.5);
+            }
+        }
+        
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* 星星动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* 双语文本容器 */
+        .bilingual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .english {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .answer-buttons {
+                flex-direction: column;
+                gap: 20px;
+                bottom: 180px;
+            }
+            
+            .answer-btn {
+                width: 250px;
+                height: 80px;
+            }
+            
+            .color-ball-display {
+                top: 80px;
+            }
+            
+            .color-ball {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .question-container {
+                top: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 太空背景 -->
+    <div class="space-background"></div>
+    
+    <!-- 星星 -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- 星球 -->
+    <div class="planets-container">
+        <div class="planet red"></div>
+        <div class="planet blue"></div>
+        <div class="planet green"></div>
+        
+        <div class="planet-label red-label">Planeta Rojo<br>红色星球</div>
+        <div class="planet-label blue-label">Planeta Azul<br>蓝色星球</div>
+        <div class="planet-label green-label">Planeta Verde<br>绿色星球</div>
+        
+        <div class="soccer-ball"></div>
+    </div>
+    
+    <!-- 颜色球显示区（屏幕上方） -->
+    <div class="color-ball-display">
+        <div class="color-ball" id="colorBall"></div>
+    </div>
+    
+    <!-- 游戏主界面 -->
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">Color Planet 🌟</h1>
+            <div class="game-subtitle">Aprendizaje de Colores / 颜色星球学习</div>
+            <div class="round-info" id="roundInfo"></div>
+        </div>
+        
+        <!-- 进度条 -->
+        <div class="progress-container">
+            <div class="progress-info">
+                <span>Progreso / 进度</span>
+                <span id="progressText">0/5</span>
+            </div>
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <!-- 计时器 -->
+        <div class="timer-container">
+            <div class="timer-label">Tiempo / 时间</div>
+            <div class="timer" id="timer">03:00</div>
+        </div>
+        
+        <!-- 问题显示 -->
+        <div class="question-container">
+            <div class="question" id="question">¿Qué color es?</div>
+            <div class="question-translation" id="questionTranslation">这是什么颜色？</div>
+        </div>
+        
+        <!-- 反馈信息 -->
+        <div class="feedback" id="feedback">
+            <div class="feedback-text"></div>
+            <div class="feedback-translation"></div>
+        </div>
+        
+        <!-- 答案按钮 -->
+        <div class="answer-buttons">
+            <button class="answer-btn rojo" onclick="checkAnswer('rojo')">
+                <div class="answer-label">ROJO</div>
+                <div class="answer-translation">红色</div>
+            </button>
+            <button class="answer-btn azul" onclick="checkAnswer('azul')">
+                <div class="answer-label">AZUL</div>
+                <div class="answer-translation">蓝色</div>
+            </button>
+            <button class="answer-btn verde" onclick="checkAnswer('verde')">
+                <div class="answer-label">VERDE</div>
+                <div class="answer-translation">绿色</div>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 积分显示 -->
+    <div class="score-board">
+        <div class="score-title">Puntuación del Equipo</div>
+        <div class="score-subtitle">团队得分</div>
+        <div class="score-value" id="teamScore">0</div>
+    </div>
+    
+    <!-- 游戏结束界面 -->
+    <div class="game-over" id="gameOver">
+        <h2 class="game-over-title">¡Juego Terminado! 🎉</h2>
+        <div class="game-over-subtitle">游戏结束！</div>
+        <div class="final-score" id="finalScore">0</div>
+        
+        <div class="results-container" id="resultsContainer">
+            <!-- 结果将在这里动态显示 -->
+        </div>
+        
+        <button class="restart-btn" onclick="restartGame()">
+            Jugar Otra Vez / 重新开始
+        </button>
+    </div>
+
+    <script>
+        // 游戏配置
+        const GAME_CONFIG = {
+            totalRounds: 5,
+            colors: ['rojo', 'azul', 'verde'],
+            roundTimes: {
+                1: 1 * 60 * 1000, // 学习模式：1分钟（测试用，可改回3分钟）
+                2: 1 * 60 * 1000, // 加速模式：每轮1分钟
+                3: 1 * 60 * 1000,
+                4: 1 * 60 * 1000,
+                5: 1 * 60 * 1000  // 冠军挑战：1分钟
+            },
+            showTimes: {
+                1: 2000, // 学习模式：2秒/颜色
+                2: 1500, // 第2轮：1.5秒/颜色
+                3: 1000, // 第3轮：1秒/颜色
+                4: 800,  // 第4轮：0.8秒/颜色
+                5: 500   // 第5轮：0.5秒/颜色
+            },
+            attemptsPerRound: {
+                1: 5,   // 学习模式：5次
+                2: 5,   // 第2轮：5次
+                3: 5,   // 第3轮：5次
+                4: 5,   // 第4轮：5次
+                5: 10   // 冠军挑战：10次
+            }
+        };
+
+        // 双语文本配置
+        const TEXT_CONFIG = {
+            roundNames: {
+                1: { es: 'Ronda 1 - Modo Aprendizaje', zh: '第1轮 - 学习模式' },
+                2: { es: 'Ronda 2 - Velocidad Media', zh: '第2轮 - 中等速度' },
+                3: { es: 'Ronda 3 - Velocidad Alta', zh: '第3轮 - 快速' },
+                4: { es: 'Ronda 4 - Velocidad Muy Alta', zh: '第4轮 - 极速' },
+                5: { es: 'Ronda 5 - Desafío de Campeón', zh: '第5轮 - 冠军挑战' }
+            },
+            colors: {
+                rojo: { es: 'ROJO', zh: '红色' },
+                azul: { es: 'AZUL', zh: '蓝色' },
+                verde: { es: 'VERDE', zh: '绿色' }
+            },
+            feedback: {
+                correct: { es: '¡Correcto!', zh: '正确！' },
+                tryAgain: { es: '¡Intenta de nuevo!', zh: '再试试！' }
+            },
+            questions: {
+                es: '¿Qué color es?',
+                zh: '这是什么颜色？'
+            }
+        };
+
+        // 游戏状态
+        let gameState = {
+            currentRound: 1,
+            currentAttempt: 0,
+            teamScore: 0,
+            currentColor: '',
+            startTime: null,
+            timerInterval: null,
+            remainingTime: 0,
+            playerStats: [],
+            reactions: [],
+            showTimeout: null
+        };
+
+        // 创建星星背景
+        function createStars() {
+            const stars = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.opacity = Math.random() * 0.5 + 0.2;
+                stars.appendChild(star);
+            }
+        }
+
+        // 开始游戏
+        function startGame() {
+            createStars();
+            startRound(1);
+        }
+
+        // 开始新的一轮
+        function startRound(round) {
+            gameState.currentRound = round;
+            gameState.currentAttempt = 0;
+            gameState.startTime = Date.now();
+            gameState.remainingTime = GAME_CONFIG.roundTimes[round];
+            
+            // 更新界面显示
+            updateRoundInfo();
+            updateProgressBar();
+            startTimer();
+            
+            // 开始颜色显示循环
+            setTimeout(showNextColor, 1000);
+        }
+
+        // 更新轮次信息
+        function updateRoundInfo() {
+            const roundInfo = TEXT_CONFIG.roundNames[gameState.currentRound];
+            document.getElementById('roundInfo').textContent = 
+                `${roundInfo.es} / ${roundInfo.zh}`;
+            
+            // 更新问题（双语）
+            document.getElementById('question').textContent = TEXT_CONFIG.questions.es;
+            document.getElementById('questionTranslation').textContent = TEXT_CONFIG.questions.zh;
+        }
+
+        // 更新进度条
+        function updateProgressBar() {
+            const totalAttempts = GAME_CONFIG.attemptsPerRound[gameState.currentRound];
+            const progress = (gameState.currentAttempt / totalAttempts) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 
+                `${gameState.currentAttempt}/${totalAttempts}`;
+        }
+
+        // 开始计时器
+        function startTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            
+            gameState.timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        // 更新计时器显示
+        function updateTimer() {
+            const timeLeft = gameState.remainingTime - (Date.now() - gameState.startTime);
+            
+            if (timeLeft <= 0) {
+                clearInterval(gameState.timerInterval);
+                clearTimeout(gameState.showTimeout);
+                endRound();
+                return;
+            }
+            
+            const minutes = Math.floor(timeLeft / 60000);
+            const seconds = Math.floor((timeLeft % 60000) / 1000);
+            
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // 显示下一个颜色
+        function showNextColor() {
+            if (gameState.currentAttempt >= GAME_CONFIG.attemptsPerRound[gameState.currentRound]) {
+                endRound();
+                return;
+            }
+            
+            gameState.currentAttempt++;
+            
+            // 随机选择颜色
+            const randomIndex = Math.floor(Math.random() * GAME_CONFIG.colors.length);
+            gameState.currentColor = GAME_CONFIG.colors[randomIndex];
+            
+            // 显示颜色球
+            const colorBall = document.getElementById('colorBall');
+            colorBall.className = 'color-ball ' + gameState.currentColor;
+            setTimeout(() => {
+                colorBall.classList.add('show');
+            }, 10);
+            
+            // 记录反应开始时间
+            gameState.reactions.push({
+                round: gameState.currentRound,
+                color: gameState.currentColor,
+                startTime: Date.now()
+            });
+            
+            // 更新进度条
+            updateProgressBar();
+            
+            // 自动隐藏颜色（如果超时）
+            const showTime = GAME_CONFIG.showTimes[gameState.currentRound];
+            gameState.showTimeout = setTimeout(() => {
+                if (gameState.currentColor) {
+                    hideColorBall();
+                    
+                    // 如果超时没有回答，记录为错误
+                    setTimeout(() => {
+                        if (gameState.currentColor) {
+                            showFeedback(TEXT_CONFIG.feedback.tryAgain, false);
+                            gameState.currentColor = '';
+                            setTimeout(showNextColor, 500);
+                        }
+                    }, 500);
+                }
+            }, showTime);
+        }
+
+        // 隐藏颜色球
+        function hideColorBall() {
+            const colorBall = document.getElementById('colorBall');
+            colorBall.classList.remove('show');
+            setTimeout(() => {
+                colorBall.className = 'color-ball';
+            }, 300);
+        }
+
+        // 检查答案
+        function checkAnswer(answer) {
+            if (!gameState.currentColor) return;
+            
+            clearTimeout(gameState.showTimeout);
+            hideColorBall();
+            
+            const reaction = gameState.reactions[gameState.reactions.length - 1];
+            const reactionTime = Date.now() - reaction.startTime;
+            
+            if (answer === gameState.currentColor) {
+                // 正确
+                gameState.teamScore++;
+                updateTeamScore();
+                showFeedback(TEXT_CONFIG.feedback.correct, true);
+                
+                // 记录正确反应
+                reaction.correct = true;
+                reaction.reactionTime = reactionTime;
+            } else {
+                // 错误
+                showFeedback(TEXT_CONFIG.feedback.tryAgain, false);
+                
+                // 记录错误反应
+                reaction.correct = false;
+                reaction.reactionTime = reactionTime;
+            }
+            
+            // 重置当前颜色
+            gameState.currentColor = '';
+            
+            // 短暂延迟后显示下一个颜色
+            setTimeout(showNextColor, 1000);
+        }
+
+        // 显示反馈（双语）
+        function showFeedback(messageType, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const textElement = feedback.querySelector('.feedback-text');
+            const translationElement = feedback.querySelector('.feedback-translation');
+            
+            const message = isCorrect ? 
+                `${messageType.es} ${TEXT_CONFIG.colors[gameState.currentColor].es}` :
+                messageType.es;
+                
+            const translation = isCorrect ? 
+                `${messageType.zh} ${TEXT_CONFIG.colors[gameState.currentColor].zh}` :
+                messageType.zh;
+            
+            textElement.textContent = message;
+            translationElement.textContent = translation;
+            feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            
+            // 播放音效（模拟）
+            if (isCorrect) {
+                playSound('correct');
+            } else {
+                playSound('tryAgain');
+            }
+        }
+
+        // 播放音效（模拟）
+        function playSound(type) {
+            try {
+                if (type === 'correct') {
+                    // 正确音效 - 使用简单的音频API
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } else {
+                    // 鼓励音效
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 400;
+                    oscillator.type = 'triangle';
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.log('音效播放失败，继续游戏');
+            }
+        }
+
+        // 更新团队分数
+        function updateTeamScore() {
+            document.getElementById('teamScore').textContent = gameState.teamScore;
+        }
+
+        // 结束当前轮次
+        function endRound() {
+            clearInterval(gameState.timerInterval);
+            clearTimeout(gameState.showTimeout);
+            
+            // 检查是否还有下一轮
+            if (gameState.currentRound < GAME_CONFIG.totalRounds) {
+                // 显示轮次结束信息
+                const feedback = document.getElementById('feedback');
+                feedback.innerHTML = `
+                    <div class="feedback-text">¡Ronda ${gameState.currentRound} completada!</div>
+                    <div class="feedback-translation">第${gameState.currentRound}轮完成！</div>
+                `;
+                feedback.className = 'feedback correct';
+                
+                // 进入下一轮
+                setTimeout(() => {
+                    startRound(gameState.currentRound + 1);
+                }, 2000);
+            } else {
+                // 游戏结束
+                endGame();
+            }
+        }
+
+        // 游戏结束
+        function endGame() {
+            // 显示游戏结束界面
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('finalScore').textContent = gameState.teamScore;
+            
+            // 生成结果统计
+            generateResults();
+            
+            // 隐藏主游戏界面
+            document.querySelector('.game-container').style.display = 'none';
+            document.querySelector('.score-board').style.display = 'none';
+        }
+
+        // 生成结果统计（双语）
+        function generateResults() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            let html = `
+                <h3>Estadísticas del Juego / 游戏统计:</h3>
+                <ul style="list-style-type: none; padding-left: 0;">
+            `;
+            
+            // 计算总反应时间
+            const totalReactionTime = gameState.reactions.reduce((sum, reaction) => 
+                sum + (reaction.reactionTime || 0), 0);
+            const avgReactionTime = totalReactionTime / gameState.reactions.length;
+            
+            // 计算准确率
+            const correctAnswers = gameState.reactions.filter(r => r.correct).length;
+            const accuracy = (correctAnswers / gameState.reactions.length * 100).toFixed(1);
+            
+            html += `
+                <li>⏱️ Tiempo promedio de reacción: ${avgReactionTime.toFixed(0)}ms<br>
+                    平均反应时间: ${avgReactionTime.toFixed(0)}毫秒</li>
+                <li>🎯 Precisión: ${accuracy}%<br>
+                    准确率: ${accuracy}%</li>
+                <li>🔢 Total de respuestas: ${gameState.reactions.length}<br>
+                    总回答数: ${gameState.reactions.length}</li>
+                <li>✅ Respuestas correctas: ${correctAnswers}<br>
+                    正确回答: ${correctAnswers}</li>
+                <li>🏆 Puntuación del equipo: ${gameState.teamScore}<br>
+                    团队得分: ${gameState.teamScore}</li>
+            `;
+            
+            // 按颜色统计
+            html += '<h4>Por Color / 按颜色统计:</h4><ul style="padding-left: 20px;">';
+            GAME_CONFIG.colors.forEach(color => {
+                const colorReactions = gameState.reactions.filter(r => r.color === color);
+                const colorCorrect = colorReactions.filter(r => r.correct).length;
+                const colorAccuracy = colorReactions.length > 0 ? 
+                    (colorCorrect / colorReactions.length * 100).toFixed(1) : 0;
+                
+                html += `
+                    <li>${TEXT_CONFIG.colors[color].es} (${TEXT_CONFIG.colors[color].zh}): 
+                        ${colorAccuracy}% precisión / 准确率</li>
+                `;
+            });
+            html += '</ul>';
+            
+            html += '</ul>';
+            resultsContainer.innerHTML = html;
+            
+            // 发送数据到服务器
+            sendGameResults(gameState);
+        }
+
+        // 发送游戏结果到服务器
+        async function sendGameResults(data) {
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        Name: getPlayerName(),
+                        Score3: data.teamScore,
+                        ReactionTime: data.reactions.reduce((sum, r) => sum + (r.reactionTime || 0), 0) / data.reactions.length,
+                        Accuracy: (data.reactions.filter(r => r.correct).length / data.reactions.length * 100).toFixed(1),
+                        GameType: 'ColorPlanet'
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('游戏结果已保存:', result);
+            } catch (error) {
+                console.error('保存结果失败:', error);
+            }
+        }
+
+        // 获取玩家名字
+        function getPlayerName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            return name || 'Jugador';
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            // 重置游戏状态
+            gameState = {
+                currentRound: 1,
+                currentAttempt: 0,
+                teamScore: 0,
+                currentColor: '',
+                startTime: null,
+                timerInterval: null,
+                remainingTime: 0,
+                playerStats: [],
+                reactions: [],
+                showTimeout: null
+            };
+            
+            // 隐藏游戏结束界面
+            document.getElementById('gameOver').style.display = 'none';
+            
+            // 显示主游戏界面
+            document.querySelector('.game-container').style.display = 'flex';
+            document.querySelector('.score-board').style.display = 'block';
+            
+            // 重置显示
+            document.getElementById('teamScore').textContent = '0';
+            document.getElementById('colorBall').className = 'color-ball';
+            document.getElementById('feedback').innerHTML = 
+                '<div class="feedback-text"></div><div class="feedback-translation"></div>';
+            
+            // 开始新游戏
+            startGame();
+        }
+
+        // 页面加载时开始游戏
+        window.onload = function() {
+            const playerName = getPlayerName();
+            document.title = `Color Planet - ${playerName}`;
+            startGame();
+        };
+    </script>
+</body>
+</html>
