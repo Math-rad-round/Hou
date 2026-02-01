@@ -23,36 +23,22 @@ export default async function handler(req, res) {
     };
 
     // 只添加存在的允许字段
-    if ('Score1' in req.body) {
-      const score1 = Number(req.body.Score1);
-      if (!isNaN(score1)) {
-        fields["Score1"] = score1;
+// 假设你的表项数组是这样的
+    const scoreFields = ['Score1', 'Score2', 'Score3','数字分数','数字争取率','问候分数','问候正确率']; // 也可以有更多项
+
+    // 处理所有表项
+    scoreFields.forEach(fieldName => {
+      if (fieldName in req.body) {
+        const scoreValue = Number(req.body[fieldName]);
+        if (!isNaN(scoreValue)) {
+          fields[fieldName] = scoreValue;
+        }
       }
-    }
-    
-    if ('Score2' in req.body) {
-      const score2 = Number(req.body.Score2);
-      if (!isNaN(score2)) {
-        fields["Score2"] = score2;
-      }
-    }
-    
-    if ('Score3' in req.body) {
-      const score3 = Number(req.body.Score3);
-      if (!isNaN(score3)) {
-        fields["Score3"] = score3;
-      }
-    }
+    });
     target = 'https://api.airtable.com/v0/appl4YcGhBdkhHOiQ/Table%201'
     if('target' in req.body){
-      target=req.body.target
+      target=req.body.target;
     }
-    // 检查是否至少有一个分数字段
-    const hasScore = 'Score1' in fields || 'Score2' in fields || 'Score3' in fields;
-    if (!hasScore) {
-      return res.status(400).json({ error: 'At least one score field (Score1, Score2, or Score3) is required' });
-    }
-
     // 构建 Airtable 数据
     const data = {
       performUpsert: {

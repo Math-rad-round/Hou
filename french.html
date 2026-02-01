@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>大坏狐狸的法语森林 H5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(#ffe9c9, #fff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+    .app {
+      width: 100%;
+      max-width: 480px;
+      background: #fff7ea;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      padding: 16px;
+    }
+    h1 {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .nav button {
+      flex: 1;
+      padding: 6px 4px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: none;
+      background: #ffe0b2;
+      color: #6a3b0b;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .nav button.active {
+      background: #ff9800;
+      color: #fff;
+      font-weight: bold;
+    }
+    .nav button:active {
+      transform: scale(0.97);
+    }
+    .screen {
+      display: none;
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 260px;
+    }
+    .screen.active {
+      display: block;
+    }
+    .question {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .big-fox {
+      font-size: 50px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .options button {
+      flex: 1 1 calc(50% - 8px);
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: none;
+      background: #ffe0b2;
+      cursor: pointer;
+    }
+    .options button.correct {
+      background: #8bc34a;
+      color: #fff;
+    }
+    .options button.wrong {
+      background: #f44336;
+      color: #fff;
+    }
+    .feedback {
+      margin-top: 8px;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    .score {
+      font-size: 13px;
+      color: #555;
+      margin-top: 4px;
+    }
+    .egg {
+      width: 80px;
+      height: 110px;
+      background: #fff;
+      border-radius: 50% 50% 45% 45%;
+      margin: 0 auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border: 3px solid #e0e0e0;
+    }
+    .color-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .color-btn {
+      flex: 1 1 calc(33.33% - 6px);
+      padding: 6px;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+      color: #333;
+      cursor: pointer;
+    }
+    .tip {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #555;
+      min-height: 32px;
+    }
+    .animal-card {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .animal-emoji {
+      font-size: 40px;
+      margin-bottom: 4px;
+    }
+    .egg-list {
+      font-size: 28px;
+      text-align: center;
+      margin: 10px 0;
+      word-wrap: break-word;
+    }
+    .number-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .number-buttons button {
+      flex: 1 1 calc(33.33% - 6px);
+      padding: 6px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      background: #ffe0b2;
+      cursor: pointer;
+    }
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <h1>大坏狐狸的法语森林</h1>
+  <div class="subtitle">问候 · 动物 · 颜色 · 数字</div>
+
+  <div class="nav">
+    <button class="active" data-target="screen-greeting">问候游戏</button>
+    <button data-target="screen-animal">动物叫声</button>
+    <button data-target="screen-color">彩色鸡蛋</button>
+    <button data-target="screen-number">数字鸡蛋</button>
+  </div>
+
+  <!-- 游戏1：问候配对 -->
+  <div class="screen active" id="screen-greeting">
+    <div class="big-fox">🦊</div>
+    <div class="question" id="greet-question"></div>
+    <div class="options" id="greet-options"></div>
+    <div class="feedback" id="greet-feedback"></div>
+    <div class="score" id="greet-score"></div>
+  </div>
+
+  <!-- 游戏2：动物叫声 -->
+  <div class="screen" id="screen-animal">
+    <div class="question">点一点击，看看动物怎么用法语说话：</div>
+    <div class="options" id="animal-buttons"></div>
+    <div class="animal-card" id="animal-card">
+      <div class="animal-emoji" id="animal-emoji">🐔</div>
+      <div id="animal-text">La Poule – Cot-cot-codet !</div>
+    </div>
+  </div>
+
+  <!-- 游戏3：彩色鸡蛋 -->
+  <div class="screen" id="screen-color">
+    <div class="question">帮狐狸给鸡蛋上色，顺便学颜色：</div>
+    <div class="egg" id="color-egg"></div>
+    <div class="color-buttons" id="color-buttons"></div>
+    <div class="tip" id="color-tip"></div>
+  </div>
+
+  <!-- 游戏4：数字鸡蛋 -->
+  <div class="screen" id="screen-number">
+    <div class="question" id="number-question">看看有几个鸡蛋？用法语选出来：</div>
+    <div class="egg-list" id="egg-list"></div>
+    <div class="number-buttons" id="number-buttons"></div>
+    <div class="feedback" id="number-feedback"></div>
+    <div class="score" id="number-score"></div>
+  </div>
+
+  <div class="footer">适配教案：《大坏狐狸》法语启蒙·问候/动物/颜色/数字</div>
+</div>
+
+<script>
+  // 切换模块
+  const navButtons = document.querySelectorAll('.nav button');
+  const screens = document.querySelectorAll('.screen');
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.getAttribute('data-target');
+      screens.forEach(sc => {
+        sc.classList.toggle('active', sc.id === target);
+      });
+    });
+  });
+
+  // ---------- 游戏1：问候配对 ----------
+  const greetQuestions = [
+    {
+      zh: '白天跟别人礼貌地说“你好”应该用：',
+      correct: 'Bonjour',
+      options: ['Bonjour', 'Bonne nuit', 'Salut']
+    },
+    {
+      zh: '晚上见面时说“晚上好”：',
+      correct: 'Bonsoir',
+      options: ['Bonsoir', 'Au revoir', 'Coucou']
+    },
+    {
+      zh: '准备睡觉前对小朋友说“晚安”：',
+      correct: 'Bonne nuit',
+      options: ['Bonne nuit', 'Bonjour', 'Salut']
+    },
+    {
+      zh: '要说“再见”，最标准的一句是：',
+      correct: 'Au revoir',
+      options: ['Au revoir', 'Salut', 'Bisous']
+    },
+    {
+      zh: '遇到好朋友，可以轻松地说一句“嗨”：',
+      correct: 'Salut',
+      options: ['Salut', 'Comment allez-vous ?', 'Enchanté']
+    }
+  ];
+  let greetIndex = 0;
+  let greetScore = 0;
+  const greetQ = document.getElementById('greet-question');
+  const greetOptionsDiv = document.getElementById('greet-options');
+  const greetFeedback = document.getElementById('greet-feedback');
+  const greetScoreDiv = document.getElementById('greet-score');
+
+  function loadGreetingQuestion() {
+    const q = greetQuestions[greetIndex % greetQuestions.length];
+    greetQ.textContent = q.zh;
+    greetOptionsDiv.innerHTML = '';
+    greetFeedback.textContent = '';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        if (opt === q.correct) {
+          btn.classList.add('correct');
+          greetFeedback.textContent = '太棒了！🦊 说：' + q.correct + '！';
+          greetScore++;
+          greetIndex++;
+          setTimeout(loadGreetingQuestion, 800);
+        } else {
+          btn.classList.add('wrong');
+          greetFeedback.textContent = '再想想～狐狸提示：正确的是 ' + q.correct;
+        }
+        updateGreetScore();
+      });
+      greetOptionsDiv.appendChild(btn);
+    });
+    updateGreetScore();
+  }
+
+  let greetTotalQuestions = greetQuestions.length;
+
+  function updateGreetScore() {
+    let accuracy = ((greetScore / greetTotalQuestions) * 100).toFixed(2);
+    greetScoreDiv.textContent = `得分：${greetScore} 分 / 正确率：${accuracy}%`;
+  }
+
+  loadGreetingQuestion();
+
+  // ---------- 游戏2：动物叫声 ----------
+  const animals = [
+    { name: 'La Poule', zh: '母鸡', sound: 'Cot-cot-codet !', emoji: '🐔' },
+    { name: 'Le Cochon', zh: '猪', sound: 'Groin groin !', emoji: '🐷' },
+    { name: 'Le Lapin', zh: '兔子', sound: 'Hop ! Hop !', emoji: '🐰' },
+    { name: 'Le Chien', zh: '狗', sound: 'Ouah ouah !', emoji: '🐶' },
+    { name: 'La Vache', zh: '奶牛', sound: 'Meuhhh !', emoji: '🐮' },
+    { name: 'Le Canard', zh: '鸭子', sound: 'Coin coin !', emoji: '🦆' },
+    { name: 'Le Mouton', zh: '绵羊', sound: 'Bêêê !', emoji: '🐑' }
+  ];
+  const animalButtonsDiv = document.getElementById('animal-buttons');
+  const animalEmoji = document.getElementById('animal-emoji');
+  const animalText = document.getElementById('animal-text');
+
+// 修改游戏2：动物叫声部分，添加播放功能
+const animalSounds = {
+  'La Poule': 'audio/母鸡.mp3',
+  'Le Cochon': 'audio/猪.mp3',
+  'Le Lapin': 'audio/兔子.mp3',
+  'Le Chien': 'audio/狗.mp3',
+  'La Vache': 'audio/奶牛.mp3',
+  'Le Canard': 'audio/鸭子.mp3',
+  'Le Mouton': 'audio/绵羊.mp3',
+};
+
+  // 修改按钮点击事件，播放声音
+  animals.forEach(a => {
+    const btn = document.createElement('button');
+    btn.textContent = a.zh + ' (' + a.name + ')';
+    btn.addEventListener('click', () => {
+      animalEmoji.textContent = a.emoji;
+      animalText.textContent = a.name + ' – ' + a.sound;
+
+      // 播放相应的动物声音
+      const audio = new Audio(animalSounds[a.name]);
+      audio.play();
+    });
+    animalButtonsDiv.appendChild(btn);
+  });
+
+
+  // ---------- 游戏3：彩色鸡蛋 ----------
+  const colorData = [
+    { fr: 'Rouge', zh: '红色：狐狸的皮毛 / 生气的脸', css: '#f44336' },
+    { fr: 'Jaune', zh: '黄色：小鸡 (Le Poussin)', css: '#ffeb3b' },
+    { fr: 'Bleu', zh: '蓝色：农场的天空 / 忧郁的心情', css: '#2196f3' },
+    { fr: 'Vert', zh: '绿色：森林的树叶', css: '#4caf50' },
+    { fr: 'Blanc', zh: '白色：鸡蛋 (L\'œuf)', css: '#ffffff' },
+    { fr: 'Noir', zh: '黑色：大灰狼 (Le Loup) / 深夜', css: '#000000' },
+    { fr: 'Rose', zh: '粉红色：猪 (Le Cochon) 的皮肤', css: '#f48fb1' },
+    { fr: 'Orange', zh: '橙色：真正的狐狸颜色', css: '#ff9800' },
+    { fr: 'Gris', zh: '灰色：灰色的狼或老鼠', css: '#9e9e9e' }
+  ];
+  const colorEgg = document.getElementById('color-egg');
+  const colorButtonsDiv = document.getElementById('color-buttons');
+  const colorTip = document.getElementById('color-tip');
+
+  colorData.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'color-btn';
+    btn.style.background = c.css;
+    btn.style.color = (c.css === '#000000') ? '#fff' : '#333';
+    btn.textContent = c.fr;
+    btn.addEventListener('click', () => {
+      colorEgg.style.background = c.css;
+      colorTip.textContent = c.fr + ' —— ' + c.zh;
+    });
+    colorButtonsDiv.appendChild(btn);
+  });
+
+  // ---------- 游戏4：数字鸡蛋 ----------
+  const numberMap = [
+    { num: 1, fr: 'Un' },
+    { num: 2, fr: 'Deux' },
+    { num: 3, fr: 'Trois' },
+    { num: 4, fr: 'Quatre' },
+    { num: 5, fr: 'Cinq' },
+    { num: 6, fr: 'Six' },
+    { num: 7, fr: 'Sept' },
+    { num: 8, fr: 'Huit' },
+    { num: 9, fr: 'Neuf' },
+    { num: 10, fr: 'Dix' }
+  ];
+  const eggListDiv = document.getElementById('egg-list');
+  const numberButtonsDiv = document.getElementById('number-buttons');
+  const numberFeedback = document.getElementById('number-feedback');
+  const numberScoreDiv = document.getElementById('number-score');
+  let currentNumber = 1;
+  let numberScore = 0;
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function createNewNumberQuestion() {
+    currentNumber = randomInt(1, 10);
+    const eggs = '🥚'.repeat(currentNumber);
+    eggListDiv.textContent = eggs;
+    numberFeedback.textContent = '';
+  }
+
+  numberMap.forEach(item => {
+    const btn = document.createElement('button');
+    btn.textContent = item.fr;
+    btn.addEventListener('click', () => {
+      if (item.num === currentNumber) {
+        numberFeedback.textContent = '答对啦！' + item.fr + ' 就是 ' + item.num + ' 个鸡蛋～';
+        numberScore++;
+        updateNumberScore();
+        setTimeout(createNewNumberQuestion, 800);
+      } else {
+        numberFeedback.textContent = '再想想，小鸡们在偷偷笑～ 正确数字是 ' + currentNumber;
+      }
+    });
+    numberButtonsDiv.appendChild(btn);
+  });
+
+  let numberTotalQuestions = numberMap.length;
+
+  function updateNumberScore() {
+    let accuracy = ((numberScore / numberTotalQuestions) * 100).toFixed(2);
+    numberScoreDiv.textContent = `数字得分：${numberScore} 分 / 正确率：${accuracy}%`;
+  }
+
+  createNewNumberQuestion();
+  updateNumberScore();
+
+  let last=null;
+  function submitScore() {
+    const greetAccuracy = ((greetScore / greetTotalQuestions) * 100).toFixed(2);
+    const numberAccuracy = ((numberScore / numberTotalQuestions) * 100).toFixed(2);
+    if(last===`${greetScore}-${greetAccuracy}-${numberScore}-${numberAccuracy}`){
+      return;
+    }
+    last = `${greetScore}-${greetAccuracy}-${numberScore}-${numberAccuracy}`;
+    console.log(`问候游戏得分：${greetScore} 分，正确率：${greetAccuracy}%`);
+    console.log(`数字游戏得分：${numberScore} 分，正确率：${numberAccuracy}%`);
+    sendScore({Name:getName(), Score1:score,target:'https://api.airtable.com/v0/appl4YcGhBdkhHOiQ/Table%203',
+      '问候分数':greetScore,
+      '问候正确率':greetAccuracy,
+      '数字分数':numberScore,
+      '数字争取率':numberAccuracy
+    });
+    // 你可以在这里执行更多的操作，例如发送分数到服务器
+  }
+        async function sendScore(body) {
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                const result = await response.json();
+                loadingMessage.style.display = 'none';
+                
+                if (response.ok) {
+                    console.log('Score erfolgreich gespeichert:', result);
+                } else {
+                    console.error('Fehler beim Speichern:', result);
+                }
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                console.error('Netzwerkfehler:', error);
+            }
+        }
+  // 定时触发提交分数的函数
+  setInterval(submitScore, 3000); // 每60秒提交一次分数
+
+</script>
+</body>
+</html>

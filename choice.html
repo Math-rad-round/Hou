@@ -186,7 +186,17 @@
             }
             return '小朋友';
         }
+        
+        // 播放音效函数
+        function playSound(filename) {
+            const sound = new Audio('audio/'+filename);
+            sound.play();
+        }
+
         function shootSun() {
+            // 播放火球音效
+            playSound('fireball.mp3');
+
             const resultHTML = `
                 <div class="result result-bad show">
                     <div class="world-visual world-dark">
@@ -218,6 +228,9 @@
         }
         
         function keepSun() {
+            // 播放正确音效
+            playSound('correct.mp3');
+
             const resultHTML = `
                 <div class="result result-good show">
                     <div class="world-visual world-bright">
@@ -247,7 +260,6 @@
                     '<button class="btn btn-behalten" onclick="location.reload()" style="margin-top: 20px;">再来一次</button>';
             }, 3000);
         }
-
         async function sendScore(body) {
             const loadingMessage = document.getElementById('loadingMessage');
             

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -104,16 +103,22 @@
         let score = 0;
         let currentRound = 0;
         let correctAnswer = 0;
+        let isAnswering = false; // To block multiple clicks during a round
 
         function generateRound() {
-            currentRound++;
             if (currentRound > 10) {
                 endGame();
                 return;
             }
+
+            currentRound++;
             correctAnswer = Math.floor(Math.random() * 3) + 1; // 1-3随机
             displaySuns(correctAnswer);
             document.getElementById('feedback').textContent = '';
+            
+            // Play fireball sound at the start of each round
+            const fireballSound = new Audio('audio/'+'fireball.mp3');
+            fireballSound.play();
         }
 
         function displaySuns(count) {
@@ -127,18 +132,33 @@
         }
 
         function answer(num) {
+            if (isAnswering) return; // Ignore clicks if already answering
+
+            isAnswering = true;
             const feedback = document.getElementById('feedback');
+            const correctSound = new Audio('audio/'+'correct.mp3');
+            const incorrectSound = new Audio('audio/'+'lose.mp3');
+
             if (num === correctAnswer) {
                 score++;
                 feedback.textContent = '✓ Richtig! (正确!)';
                 feedback.className = 'feedback correct';
+                correctSound.play();
             } else {
                 feedback.textContent = `✗ Falsch! Es sind ${correctAnswer} Sonnen.`;
                 feedback.className = 'feedback incorrect';
+                incorrectSound.play();
             }
+
             document.getElementById('scoreValue').textContent = score;
-            setTimeout(generateRound, 1500);
+
+            // Wait for next round before accepting new clicks
+            setTimeout(() => {
+                isAnswering = false; // Re-enable answering for the next round
+                generateRound();
+            }, 1500); // Wait for 1.5 seconds before starting the next round
         }
+
         function getName() {
             const urlParams = new URLSearchParams(window.location.search);
             const name = urlParams.get('name');
@@ -147,15 +167,16 @@
             }
             return '小朋友';
         }
+
         function endGame() {
             document.getElementById('sunDisplay').innerHTML = '';
             document.getElementById('feedback').textContent = `Spiel vorbei! Du hast ${score}/10 erreicht! 🎉`;
             document.querySelector('.button-group').style.display = 'none';
             
-            sendScore({Name:getName(), Score1:score});
+            sendScore({Name: getName(), Score1: score});
         }
 
-        async function sendscore(body) {
+        async function sendScore(body) {
             const loadingMessage = document.getElementById('loadingMessage');
             
             try {
